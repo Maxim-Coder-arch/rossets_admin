@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TemplateContent from "@/app/main/template-content/templateContent";
-import { adminSeriesList } from "@/data/seriesList";
 import Image from "next/image";
 import TrashCanIcon from "@/public/icons/trashCan";
-import "./index.scss";
 import PlusIcon from "@/public/icons/plus";
+import "./index.scss";
 
 const AddRosset = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +26,7 @@ const AddRosset = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [seriesList, setSeriesList] = useState<any[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -126,6 +126,21 @@ const AddRosset = () => {
     comment: formData.comment || "",
   };
 
+  useEffect(() => {
+    const fetchSeries = async () => {
+      try {
+        const res = await fetch("/api/series");
+        const data = await res.json();
+
+        setSeriesList(data.series);
+      } catch (err) {
+        console.error("Ошибка загрузки серий:", err);
+      }
+    };
+
+    fetchSeries();
+  }, []);
+
   return (
     <TemplateContent>
       <div className="add-rosset">
@@ -156,9 +171,9 @@ const AddRosset = () => {
                 <label>Серия *</label>
                 <select name="seriesId" value={formData.seriesId} onChange={handleChange} required>
                   <option value="">Выберите серию</option>
-                  {adminSeriesList.map((series) => (
-                    <option key={series.id} value={series.id}>
-                      {series.title}
+                  {seriesList.map((series) => (
+                    <option key={series._id} value={series.seriesId}>
+                      {series.seriesTitle}
                     </option>
                   ))}
                 </select>

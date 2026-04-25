@@ -2,58 +2,112 @@
 
 import { useEffect, useState } from "react";
 import TemplateContent from "@/app/main/template-content/templateContent";
-import { seriesData } from "@/data/series.data";
 import SeriesFolder from "@/app/share/series-folder/seriesFolder";
 import "./index.scss";
+
+interface ISeries {
+  _id: string;
+  seriesId: string;
+  seriesTitle: string;
+  image: string;
+}
+
+interface IProduct {
+  _id: string;
+  seriesId: string;
+  seriesNumber: string;
+  price: number;
+  image: string;
+}
 
 const Series = () => {
   const [openSeriesId, setOpenSeriesId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [rossets, setRossets] = useState<any[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [series, setSeries] = useState<ISeries[]>([]);
   const [loading, setLoading] = useState(true);
 
   const toggleSeries = (id: string) => {
-    setOpenSeriesId(openSeriesId === id ? null : id);
+    setOpenSeriesId((prev) => (prev === id ? null : id));
   };
 
-  const filteredSeries = seriesData.filter((series) =>
-    series.seriesTitle.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  // Загружаем и серии, и продукты параллельно
   useEffect(() => {
-    const fetchRossets = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
+        setLoading(true);
+        const [seriesRes, productsRes] = await Promise.all([
+          fetch("/api/series"),
+          fetch("/api/products"),
+        ]);
 
-        setRossets(data.products);
+        const seriesData = await seriesRes.json();
+        const productsData = await productsRes.json();
+
+        // Исправлено: берём массив напрямую, а не .products или .series
+        setSeries(Array.isArray(seriesData) ? seriesData : seriesData.series || []);
+        setProducts(Array.isArray(productsData) ? productsData : productsData.products || []);
       } catch (err) {
-        console.error("Ошибка загрузки розеток:", err);
+        console.error("Ошибка загрузки:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRossets();
+    fetchData();
   }, []);
-  const rossetsBySeries = rossets.reduce((acc: any, rosset) => {
-    const key = String(rosset.seriesId);
 
-    if (!acc[key]) {
-      acc[key] = [];
-    }
+  // Фильтрация серий
+  const filteredSeries = series.filter((s) =>
+    s.seriesTitle?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    acc[key].push(rosset);
+  // Группировка продуктов по seriesId
+  const productsBySeries = products.reduce((acc: Record<string, IProduct[]>, product) => {
+    const key = String(product.seriesId);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(product);
     return acc;
   }, {});
+
+  // Удаление серии
+  const handleDeleteSeries = async (id: string) => {
+    try {
+      const res = await fetch("/api/series", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        // Удаляем серию из состояния
+        setSeries((prev) => prev.filter((item) => item._id !== id));
+        // Удаляем связанные продукты из состояния
+        setProducts((prev) => prev.filter((p) => p.seriesId !== id));
+      } else {
+        const error = await res.json();
+        console.error("Ошибка удаления:", error);
+      }
+    } catch (err) {
+      console.error("Ошибка удаления:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <TemplateContent>
+        <div className="series-loading">Загрузка...</div>
+      </TemplateContent>
+    );
+  }
 
   return (
     <TemplateContent>
       <div className="series-page">
         <div className="series-page__header">
-          <div>
-            <p className="subtitle">Всего серий: {seriesData.length} | Всего розеток: {rossets.length}</p>
-          </div>
+          <p className="subtitle">
+            Всего серий: {series.length} | Всего товаров: {products.length}
+          </p>
         </div>
 
         <div className="series-page__search">
@@ -66,18 +120,19 @@ const Series = () => {
         </div>
 
         <div className="series-list">
-          {filteredSeries.map((series) => (
+          {filteredSeries.map((seriesItem) => (
             <SeriesFolder
-              key={series._id}
-              series={series}
-              rossetsList={rossetsBySeries[series._id] || []}
+              key={seriesItem._id}
+              series={seriesItem}
+              rossetsList={productsBySeries[seriesItem.seriesId] || []}
               onOpen={toggleSeries}
-              isOpen={openSeriesId === series._id}
+              isOpen={openSeriesId === seriesItem._id}
+              onDeleteSeries={handleDeleteSeries}
             />
           ))}
         </div>
 
-        {filteredSeries.length === 0 && (
+        {filteredSeries.length === 0 && !loading && (
           <div className="no-results">
             <p>Серии не найдены</p>
           </div>

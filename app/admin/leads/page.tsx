@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TemplateContent from "@/app/main/template-content/templateContent";
 import Image from "next/image";
 import "./index.scss";
+import TrashCanIcon from "@/public/icons/trashCan";
 
 /* ---------------- TYPES ---------------- */
 
@@ -54,15 +55,20 @@ const RossetCardLead = ({ rosset }: { rosset: IRosset }) => {
 const LeadCard = ({
   lead,
   onMarkAsViewed,
+  onDelete,
 }: {
   lead: ILead;
   onMarkAsViewed: (id: string) => void;
+  onDelete?: (id: string, type: string) => void;
 }) => {
   return (
     <div className={`lead-card ${lead.status === "viewed" ? "viewed" : ""}`}>
       <div className="lead-card__header">
         <span className="lead-date">{new Date(lead.createdAt).toLocaleString()}</span>
         {lead.status === "new" && <span className="lead-badge new">Новая</span>}
+        {lead.status !== "new" && <button onClick={() => onDelete(lead._id, lead.type)}>
+          <TrashCanIcon />  
+        </button>}
       </div>
 
       <div className="lead-card__info">
@@ -123,6 +129,7 @@ const Leads = () => {
     fetchLeads();
   }, []);
 
+
   const markAsViewed = async (id: string) => {
     try {
       await fetch("/api/bids", {
@@ -147,6 +154,28 @@ const Leads = () => {
       </TemplateContent>
     );
   }
+
+  const deleteLead = async (id: string, type: string) => {
+    try {
+      const res = await fetch("/api/bids", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, type }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Delete failed");
+      }
+
+      setLeads((prev) => prev.filter((l) => l._id !== id));
+
+    } catch (err) {
+      console.error(err);
+      alert("Не удалось удалить заявку");
+    }
+  };
 
   return (
     <TemplateContent>
@@ -198,7 +227,7 @@ const Leads = () => {
                 <div className="empty-leads">Нет просмотренных заявок</div>
               ) : (
                 viewed.map((lead) => (
-                  <LeadCard key={lead._id} lead={lead} onMarkAsViewed={markAsViewed} />
+                  <LeadCard key={lead._id} lead={lead} onMarkAsViewed={markAsViewed} onDelete={deleteLead} />
                 ))
               )}
             </div>

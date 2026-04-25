@@ -66,3 +66,48 @@ export async function PATCH(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { id, type } = await req.json();
+
+    if (!id || !type) {
+      return NextResponse.json(
+        { error: "no id or type" },
+        { status: 400 }
+      );
+    }
+
+    const withoutGoods = await getCollection("bid_without_goods");
+    const withGoods = await getCollection("bid_with_goods");
+
+    let collection;
+
+    if (type === "without_goods") {
+      collection = withoutGoods;
+    } else {
+      collection = withGoods;
+    }
+
+    const result = await collection.deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        { error: "not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "DELETE error" },
+      { status: 500 }
+    );
+  }
+}

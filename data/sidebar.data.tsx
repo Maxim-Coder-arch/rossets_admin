@@ -1,4 +1,5 @@
 import CommentsIcon from "@/public/icons/comments";
+import DecorIcon from "@/public/icons/decor";
 import HomeIcon from "@/public/icons/home";
 import LeadIcon from "@/public/icons/lead";
 import LinkIcon from "@/public/icons/link";
@@ -13,7 +14,7 @@ export const sidebarData = [
     icon: <HomeIcon />
   },
   {
-    label: "Серии",
+    label: "Все серии",
     link: "/admin/series",
     icon: <SeriesIcon />
   },
@@ -26,6 +27,16 @@ export const sidebarData = [
     label: "Добавление розетки",
     link: "/admin/add-rosset",
     icon: <PlusIcon />
+  },
+  {
+    label: "Добавление серии",
+    link: "/admin/add-series",
+    icon: <PlusIcon />
+  },
+  {
+    label: "Декоры",
+    link: "/admin/decor",
+    icon: <DecorIcon />
   },
   {
     label: "Заявки",

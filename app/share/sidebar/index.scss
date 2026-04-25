@@ -34,6 +34,10 @@
         column-gap: 10px;
         @include font(14px, 400);
         color: rgba($black-text-color, 0.8);
+        & svg {
+          width: 30px;
+          height: 30px;
+        }
       }
     }
   }
