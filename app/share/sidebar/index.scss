@@ -1,0 +1,45 @@
+@use "../../global_styles/colors/colors.scss" as *;
+@use "../../global_styles/mixins/mixins.scss" as *;
+
+.sidebar {
+  width: 380px;
+  height: 100vh;
+  background-color: rgba($ui-elements-background-color, 0.5);
+  backdrop-filter: blur(50px);
+  &__content {
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    &__header {
+      @include font(18px, 700);
+      color: $black-text-color;
+      column-gap: 10px;
+      display: flex;
+      & button {
+        cursor: pointer;
+      }
+    }
+    &__body {
+      & ul {
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+      }
+      & ul a {
+        background-color: rgba($ui-elements-background-color, 0.5);
+        padding: 7px 10px;
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        @include font(14px, 400);
+        color: rgba($black-text-color, 0.8);
+      }
+    }
+  }
+}
+
+.active {
+  background: #00000058 !important;
+  color: white !important;
+}

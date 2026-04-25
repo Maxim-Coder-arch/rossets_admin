@@ -1,0 +1,58 @@
+@use "../../global_styles/colors/colors.scss" as *;
+@use "../../global_styles/mixins/mixins.scss" as *;
+
+.series-folder {
+  background: $admin-overlay;
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba($admin-white, 0.25);
+  overflow: hidden;
+  transition: all 0.2s;
+  
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    
+    &:hover {
+      background: rgba($admin-black, 0.03);
+    }
+    
+    .folder-icon {
+      font-size: 32px;
+    }
+    
+    .folder-info {
+      flex: 1;
+      
+      .folder-title {
+        @include font(18px, 600);
+        color: $admin-black;
+        margin-bottom: 4px;
+      }
+      
+      .folder-count {
+        @include font(12px, 400);
+        color: $admin-gray-dark;
+      }
+    }
+    
+    .folder-arrow {
+      font-size: 14px;
+      color: $admin-gray-dark;
+    }
+  }
+  
+  &__content {
+    border-top: 1px solid rgba($admin-black, 0.06);
+    padding: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+}

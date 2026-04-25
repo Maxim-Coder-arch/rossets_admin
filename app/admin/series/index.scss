@@ -1,0 +1,136 @@
+@use "../../global_styles/colors/colors.scss" as *;
+@use "../../global_styles/mixins/mixins.scss" as *;
+
+
+
+.series-page {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+    
+    h1 {
+      @include font(28px, 600);
+      color: $admin-black;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      @include font(14px, 400);
+      color: $admin-gray-dark;
+    }
+  }
+  
+  &__search {
+    margin-bottom: 32px;
+    
+    input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 16px;
+      border: 1px solid rgba($admin-black, 0.1);
+      border-radius: 12px;
+      background: $admin-overlay;
+      backdrop-filter: blur(8px);
+      @include font(14px, 400);
+      color: $admin-black;
+      
+      &::placeholder {
+        color: $admin-gray-dark;
+      }
+      
+      &:focus {
+        outline: none;
+        border-color: $admin-gray-dark;
+      }
+    }
+  }
+}
+
+.add-series-btn {
+  padding: 10px 20px;
+  background: $admin-black;
+  color: $admin-white;
+  border-radius: 12px;
+  @include font(14px, 500);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.series-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+
+.rossets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.empty-folder {
+  text-align: center;
+  padding: 40px;
+  
+  span {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    @include font(14px, 400);
+    color: $admin-gray-dark;
+    margin-bottom: 16px;
+  }
+  
+  .add-rosset-btn {
+    padding: 10px 20px;
+    background: $admin-black;
+    color: $admin-white;
+    border-radius: 10px;
+    @include font(13px, 500);
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.no-results {
+  text-align: center;
+  padding: 60px;
+  
+  span {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    @include font(16px, 400);
+    color: $admin-gray-dark;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,58 @@
+'use client';
+
+import TemplateContent from "@/app/main/template-content/templateContent"
+import RossetCard from "@/app/share/rosset-card/rossetCard";
+import "./index.scss";
+import { useEffect, useState } from "react";
+
+const Rossets = () => {
+  const [rossets, setRossets] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchRossets = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+
+        setRossets(data.products);
+      } catch (err) {
+        console.error("Ошибка загрузки:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRossets();
+  }, []);
+  const deleteRosset = async (id: string) => {
+    try {
+      await fetch("/api/products", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      setRossets((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      console.error("Ошибка удаления:", err);
+    }
+  };
+  return (
+    <TemplateContent>
+      <div className="rossets-page">
+        <div className="rossets-page__header">
+          <p className="rossets-page__count">Всего: {rossets.length}</p>
+        </div>
+        <div className="rossets-page__grid">
+          {rossets.map((rosset, index) => (
+            <RossetCard key={rosset._id || index} rosset={rosset} onDelete={deleteRosset} />
+          ))}
+        </div>
+      </div>
+    </TemplateContent>
+  )
+}
+
+export default Rossets;
