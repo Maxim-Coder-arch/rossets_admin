@@ -8,6 +8,7 @@ import "./index.scss";
 import TrashCanIcon from "@/public/icons/trashCan";
 import ArrowBottomIcon from "@/public/icons/arrowBottom";
 import ArrowRightIcon from "@/public/icons/arrowRight";
+import Popup from "@/app/share/popup/popup";
 
 interface IAdditionalField {
   id: number;
@@ -53,7 +54,7 @@ const DecorCard = ({ decor, onDelete, onToggle }: {
           <button className="toggle-btn">{isExpanded ? <ArrowRightIcon /> : <ArrowBottomIcon />}</button>
           <button className="delete-btn" onClick={(e) => {
             e.stopPropagation();
-            if (confirm("Удалить этот декор?")) onDelete(decor._id);
+            onDelete(decor._id);
           }}>
             <TrashCanIcon />
           </button>
@@ -106,6 +107,8 @@ const Decor = () => {
   const [additionalFields, setAdditionalFields] = useState<IAdditionalField[]>([]);
   const [newFieldLabel, setNewFieldLabel] = useState("");
   const [newFieldValue, setNewFieldValue] = useState("");
+  const [decorToDelete, setDecorToDelete] = useState<string | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   
   // Дополнительные изображения
   const [additionalImages, setAdditionalImages] = useState<string[]>([]);
@@ -160,22 +163,27 @@ const Decor = () => {
 
   // Удаление декора
   const handleDeleteDecor = async (id: string) => {
+    setDecorToDelete(id);
+  };
+
+  const confirmDeleteDecor = async () => {
+    if (!decorToDelete) return;
+    
     try {
       const res = await fetch("/api/decors", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id: decorToDelete }),
       });
 
       if (!res.ok) {
         throw new Error("Ошибка удаления декора");
       }
 
-      // убираем из UI
-      setDecors((prev) => prev.filter((d) => d._id !== id));
-
+      setDecors((prev) => prev.filter((d) => d._id !== decorToDelete));
+      setDecorToDelete(null);
     } catch (err) {
       console.error(err);
       alert("Ошибка удаления");
@@ -231,6 +239,7 @@ const Decor = () => {
       setAdditionalImages([]);
       setAdditionalFields([]);
       setPreviewImage("");
+      setShowSuccessPopup(true);
 
     } catch (err) {
       console.error(err);
@@ -412,7 +421,7 @@ const Decor = () => {
                 <DecorCard
                   key={decor._id}
                   decor={decor}
-                  onDelete={handleDeleteDecor}
+                  onDelete={setDecorToDelete}
                   onToggle={() => {}}
                 />
               ))
@@ -420,6 +429,25 @@ const Decor = () => {
           </div>
         </div>
       </div>
+      {decorToDelete && (
+        <Popup 
+          title="Подтвердить удаление"
+          text="Вы уверены, что хотите удалить этот декор?"
+          onClose={() => setDecorToDelete(null)}
+          onConfirm={confirmDeleteDecor}
+          onCancel={() => setDecorToDelete(null)}
+        />
+      )}
+      {showSuccessPopup && (
+        <Popup
+          title="Успешно!"
+          text="Декор успешно добавлен в каталог."
+          onClose={() => setShowSuccessPopup(false)}
+          onConfirm={() => setShowSuccessPopup(false)}
+          onCancel={() => setShowSuccessPopup(false)}
+          singleButton={true}
+        />
+      )}
     </TemplateContent>
   );
 };

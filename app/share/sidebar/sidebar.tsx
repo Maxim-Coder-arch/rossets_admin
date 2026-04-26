@@ -3,14 +3,19 @@
 import { sidebarData } from "@/data/sidebar.data";
 import Link from "next/link";
 import PanelIcon from "@/public/icons/panel";
-import "./index.scss";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import "./index.scss";
 
 const SideBar = ({ onOpen }: { onOpen: () => void }) => {
   const pathName = usePathname();
 
   return (
-    <div className="sidebar">
+    <motion.div 
+    initial={{opacity: 0}}
+    animate={{opacity: 1}}
+    
+    className="sidebar">
       <div className="sidebar__content">
         <div className="sidebar__content__header">
           <h1>CMS система</h1>
@@ -33,7 +38,7 @@ const SideBar = ({ onOpen }: { onOpen: () => void }) => {
           </ul>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

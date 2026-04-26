@@ -18,11 +18,12 @@ const initialData = {
   recentOrders: [],
   notes: [],
   quickActions: [
-    { id: "viewOrders", label: "Заказы", link: "/admin/orders", color: "accent-orange" },
-    { id: "reviews", label: "Отзывы", link: "/admin/orders", color: "accent-orange" },
-    { id: "all_rossets", label: "Все розетки", link: "/admin/orders", color: "accent-orange" },
-    { id: "all_series", label: "Все серии", link: "/admin/orders", color: "accent-orange" },
-    { id: "newRosset", label: "Новая розетка", link: "/admin/rossets/new", color: "accent-blue" },
+    { id: "viewOrders", label: "Заявки", link: "/admin/leads", color: "accent-orange" },
+    { id: "reviews", label: "Отзывы", link: "/admin/reviews", color: "accent-orange" },
+    { id: "all_rossets", label: "Все розетки", link: "/admin/rossets", color: "accent-orange" },
+    { id: "all_series", label: "Все серии", link: "/admin/series", color: "accent-orange" },
+    { id: "newRosset", label: "Новая розетка", link: "/admin/add-rosset", color: "accent-blue" },
+    { id: "decors", label: "Декоры", link: "/admin/decor", color: "accent-blue" },
   ],
 };
 

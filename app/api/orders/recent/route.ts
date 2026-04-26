@@ -1,3 +1,4 @@
+// app/api/orders/route.ts
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodb/db";
 
@@ -13,6 +14,7 @@ export async function GET() {
         $project: {
           name: 1,
           createdAt: 1,
+          type: { $literal: "without_goods" },
         },
       },
       {
@@ -26,6 +28,24 @@ export async function GET() {
               $project: {
                 name: 1,
                 createdAt: 1,
+                type: { $literal: "with_goods" },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unionWith: {
+          coll: "bid_with_decor",
+          pipeline: [
+            {
+              $match: { status: "new" },
+            },
+            {
+              $project: {
+                name: 1,
+                createdAt: 1,
+                type: { $literal: "with_decor" },
               },
             },
           ],

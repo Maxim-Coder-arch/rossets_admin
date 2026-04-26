@@ -1,0 +1,296 @@
+@use "../../global_styles/colors/colors.scss" as *;
+@use "../../global_styles/mixins/mixins.scss" as *;
+
+$admin-white: #ffffff;
+$admin-black: #0c0c0c;
+$admin-gray-dark: #9e9e9e;
+$admin-gray-light: #f5f5f5;
+$admin-overlay: rgba(0, 0, 0, 0.5);
+$accent-red: #dc5480;
+$accent-green: #23ab7f;
+
+.change-rosset-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $admin-overlay;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.change-rosset-modal {
+  position: relative;
+  background: rgba($admin-white, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba($admin-white, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+  &__close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: $admin-gray-dark;
+    
+    &:hover {
+      color: $admin-black;
+    }
+  }
+
+  &__title {
+    @include font(20px, 600);
+    color: $admin-black;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 24px;
+
+    @media (max-width: 1000px) {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+
+  // Левая колонка — оригинал
+  &__original, &__preview {
+    h3 {
+      @include font(14px, 600);
+      color: $admin-black;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba($admin-black, 0.1);
+    }
+
+    .preview-card {
+      background: $admin-gray-light;
+      border-radius: 16px;
+      overflow: hidden;
+
+      &__image {
+        aspect-ratio: 1 / 1;
+        background: $admin-white;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 16px;
+        }
+      }
+
+      &__info {
+        padding: 16px;
+
+        h4 {
+          @include font(14px, 600);
+          color: $admin-black;
+          margin-bottom: 8px;
+        }
+
+        .details {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 8px;
+
+          span {
+            @include font(11px, 400);
+            color: $admin-gray-dark;
+          }
+        }
+
+        .price {
+          @include font(16px, 700);
+          color: $admin-black;
+
+          &::after {
+            content: " ₽";
+            @include font(11px, 400);
+            color: $admin-gray-dark;
+          }
+        }
+
+        .comment {
+          @include font(11px, 400);
+          color: $admin-gray-dark;
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px solid rgba($admin-black, 0.1);
+        }
+      }
+    }
+  }
+
+  // Центральная колонка — форма
+  &__form {
+    h3 {
+      @include font(14px, 600);
+      color: $admin-black;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba($admin-black, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+
+      label {
+        display: block;
+        @include font(12px, 500);
+        color: $admin-black;
+        margin-bottom: 4px;
+      }
+
+      input, textarea, select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid rgba($admin-black, 0.15);
+        border-radius: 8px;
+        background: $admin-white;
+        @include font(13px, 400);
+        color: $admin-black;
+
+        &:focus {
+          outline: none;
+          border-color: $admin-gray-dark;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+        font-family: inherit;
+      }
+    }
+
+    .images-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+
+      .image-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: $admin-gray-light;
+        padding: 4px 8px;
+        border-radius: 8px;
+
+        img {
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+          border-radius: 4px;
+        }
+
+        button {
+          background: none;
+          cursor: pointer;
+          color: $accent-red;
+        }
+      }
+    }
+
+    .add-image {
+      display: flex;
+      gap: 8px;
+
+      input {
+        flex: 1;
+      }
+
+      button {
+        width: 36px;
+        background: $admin-black;
+        color: $admin-white;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    }
+
+    .error-message {
+      background: rgba($accent-red, 0.1);
+      border: 1px solid rgba($accent-red, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 12px 0;
+      color: $accent-red;
+      @include font(12px, 400);
+    }
+
+    .success-message {
+      background: rgba($accent-green, 0.1);
+      border: 1px solid rgba($accent-green, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 12px 0;
+      color: $accent-green;
+      @include font(12px, 400);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+
+      button {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        @include font(13px, 500);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .cancel-btn {
+        background: rgba($admin-black, 0.1);
+        color: $admin-black;
+
+        &:hover {
+          background: rgba($admin-black, 0.2);
+        }
+      }
+
+      .submit-btn {
+        background: $admin-black;
+        color: $admin-white;
+
+        &:hover {
+          opacity: 0.8;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}

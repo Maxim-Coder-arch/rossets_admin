@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TemplateContent from "@/app/main/template-content/templateContent";
 import SeriesFolder from "@/app/share/series-folder/seriesFolder";
 import "./index.scss";
+import Popup from "@/app/share/popup/popup";
 
 interface ISeries {
   _id: string;
@@ -26,6 +27,8 @@ const Series = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [series, setSeries] = useState<ISeries[]>([]);
   const [loading, setLoading] = useState(true);
+  const [seriesToDelete, setSeriesToDelete] = useState<string | null>(null);
+  const [rossetToDelete, setRossetToDelete] = useState<{ id: string; seriesId: string } | null>(null);
 
   const toggleSeries = (id: string) => {
     setOpenSeriesId((prev) => (prev === id ? null : id));
@@ -44,7 +47,6 @@ const Series = () => {
         const seriesData = await seriesRes.json();
         const productsData = await productsRes.json();
 
-        // Исправлено: берём массив напрямую, а не .products или .series
         setSeries(Array.isArray(seriesData) ? seriesData : seriesData.series || []);
         setProducts(Array.isArray(productsData) ? productsData : productsData.products || []);
       } catch (err) {
@@ -80,9 +82,7 @@ const Series = () => {
       });
 
       if (res.ok) {
-        // Удаляем серию из состояния
         setSeries((prev) => prev.filter((item) => item._id !== id));
-        // Удаляем связанные продукты из состояния
         setProducts((prev) => prev.filter((p) => p.seriesId !== id));
       } else {
         const error = await res.json();
@@ -91,6 +91,32 @@ const Series = () => {
     } catch (err) {
       console.error("Ошибка удаления:", err);
     }
+  };
+
+  // Удаление розетки
+  const handleDeleteRosset = async (id: string, seriesId: string) => {
+    try {
+      const res = await fetch("/api/products", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        // Удаляем розетку из состояния
+        setProducts((prev) => prev.filter((p) => p._id !== id));
+      } else {
+        const error = await res.json();
+        console.error("Ошибка удаления розетки:", error);
+      }
+    } catch (err) {
+      console.error("Ошибка удаления розетки:", err);
+    }
+  };
+
+  // Функция для запроса на удаление розетки (вызывается из SeriesFolder)
+  const requestDeleteRosset = (id: string, seriesId: string) => {
+    setRossetToDelete({ id, seriesId });
   };
 
   if (loading) {
@@ -127,7 +153,8 @@ const Series = () => {
               rossetsList={productsBySeries[seriesItem.seriesId] || []}
               onOpen={toggleSeries}
               isOpen={openSeriesId === seriesItem._id}
-              onDeleteSeries={handleDeleteSeries}
+              onDeleteSeries={setSeriesToDelete}
+              onDeleteRosset={requestDeleteRosset}
             />
           ))}
         </div>
@@ -138,6 +165,34 @@ const Series = () => {
           </div>
         )}
       </div>
+
+      {/* Попап для удаления серии */}
+      {seriesToDelete && (
+        <Popup
+          title="Подтвердить удаление"
+          text="Вы уверены, что хотите удалить эту серию? Это удалит серию и все продукты этой серии."
+          onClose={() => setSeriesToDelete(null)}
+          onConfirm={() => {
+            handleDeleteSeries(seriesToDelete);
+            setSeriesToDelete(null);
+          }}
+          onCancel={() => setSeriesToDelete(null)}
+        />
+      )}
+
+      {/* Попап для удаления розетки */}
+      {rossetToDelete && (
+        <Popup
+          title="Подтвердить удаление"
+          text="Вы уверены, что хотите удалить эту розетку?"
+          onClose={() => setRossetToDelete(null)}
+          onConfirm={() => {
+            handleDeleteRosset(rossetToDelete.id, rossetToDelete.seriesId);
+            setRossetToDelete(null);
+          }}
+          onCancel={() => setRossetToDelete(null)}
+        />
+      )}
     </TemplateContent>
   );
 };

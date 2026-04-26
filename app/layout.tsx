@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import "./global_styles/reset/reset.scss";
 import Panel from "./utils/panel/panel";
+import LoaderComponent from "./share/loader/loader";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,8 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Panel />
-        {children}
+        <main>
+          <Panel />
+          <LoaderComponent />
+          {children}
+        </main>
       </body>
     </html>
   );

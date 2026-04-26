@@ -6,44 +6,151 @@
   height: 100vh;
   background-color: rgba($ui-elements-background-color, 0.5);
   backdrop-filter: blur(50px);
+  transition: all 0.3s ease;
+  
+  @media screen and (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    background-color: rgba($ui-elements-background-color, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba($black-text-color, 0.1);
+    z-index: 1003;
+  }
+  
   &__content {
-    padding: 20px 10px;
+    padding: 24px 16px;
     display: flex;
     flex-direction: column;
     row-gap: 30px;
+    height: 100%;
+    
+    @media screen and (max-width: 768px) {
+      padding: 8px 12px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      row-gap: 0;
+    }
+    
     &__header {
-      @include font(18px, 700);
+      @include font(14px, 700);
       color: $black-text-color;
-      column-gap: 10px;
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      @media screen and (max-width: 768px) {
+        display: none;
+      }
+      
       & button {
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
       }
     }
+    
     &__body {
+      flex: 1;
+      
+      @media screen and (max-width: 768px) {
+        flex: 1;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
       & ul {
         display: flex;
         flex-direction: column;
-        row-gap: 10px;
-      }
-      & ul a {
-        background-color: rgba($ui-elements-background-color, 0.5);
-        padding: 7px 10px;
-        display: flex;
-        align-items: center;
-        column-gap: 10px;
-        @include font(14px, 400);
-        color: rgba($black-text-color, 0.8);
-        & svg {
-          width: 30px;
-          height: 30px;
+        row-gap: 8px;
+        
+        @media screen and (max-width: 768px) {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-around;
+          gap: 8px;
+          margin: 0;
+          padding: 0;
+        }
+        
+        a {
+          background-color: rgba($ui-elements-background-color, 0.5);
+          padding: 10px 12px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          @include font(14px, 400);
+          color: rgba($black-text-color, 0.8);
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          
+          @media screen and (max-width: 768px) {
+            flex-direction: column;
+            padding: 8px 16px;
+            gap: 4px;
+            border-radius: 10px;
+          }
+          
+          &:hover {
+            background-color: rgba($black-text-color, 0.05);
+          }
+          
+          &.active {
+            background: $black-text-color !important;
+            color: white !important;
+            
+            svg {
+              color: white;
+            }
+          }
+          
+          svg {
+            width: 20px;
+            height: 20px;
+            transition: all 0.2s ease;
+            
+            @media screen and (max-width: 768px) {
+              width: 22px;
+              height: 22px;
+            }
+          }
+          
+          li {
+            list-style: none;
+            
+            @media screen and (max-width: 768px) {
+              font-size: 10px;
+            }
+          }
         }
       }
     }
   }
 }
 
-.active {
-  background: #00000058 !important;
-  color: white !important;
+// Скрываем body scrollbar при открытии мобильного меню
+.sidebar-overlay {
+  display: none;
+  
+  @media screen and (max-width: 768px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1002;
+  }
 }

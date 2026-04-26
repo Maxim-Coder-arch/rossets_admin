@@ -1,0 +1,80 @@
+@use "../../global_styles/colors/colors.scss" as *;
+@use "../../global_styles/mixins/mixins.scss" as *;
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+  background-color: rgba($black-text-color, 0.5);
+  z-index: 1001;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: {
+    bottom: 20px;
+    right: 20px;
+  };
+  @media screen and (max-width: 768px) {
+    padding-right: 0;
+    justify-content: center;
+  }
+}
+
+.popup-window {
+  width: fit-content;
+  height: fit-content;
+  min-width: 350px;
+  min-height: 100px;
+  background-color: rgba($main-text-color, 0.5);
+  backdrop-filter: blur(20px);
+  padding: 25px 10px;
+  @media screen and (max-width: 768px) {
+    min-width: none;
+    width: 90%;
+  }
+  &__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  &__title {
+    @include font(20px, 600);
+    color: $black-text-color;
+    margin-bottom: 10px;
+  }
+  &__text {
+    @include font(14px, 400);
+    color: rgba($black-text-color, 0.8);
+  }
+  &__actions {
+    display: flex;
+    margin-top: 30px;
+    column-gap: 20px;
+    &__btn {
+      padding: 8px 22px;
+      border-radius: 10px;
+      cursor: pointer;
+      @include font(14px, 500);
+      color: $main-text-color;
+    }
+  }
+}
+
+.popup-btn--cancel {
+  background-color: $accent-mint;
+}
+
+
+.popup-btn--confirm {
+  background-color: $accent-terracotta;
+}
+
+.message-btn {
+  background-color: $accent-mint;
+}

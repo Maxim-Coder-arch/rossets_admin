@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import TemplateContent from "@/app/main/template-content/templateContent";
 import Image from "next/image";
 import TrashCanIcon from "@/public/icons/trashCan";
 import PlusIcon from "@/public/icons/plus";
+import Popup from "@/app/share/popup/popup";
 import "./index.scss";
 
 const AddRosset = () => {
@@ -27,6 +28,7 @@ const AddRosset = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [seriesList, setSeriesList] = useState<any[]>([]);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -55,9 +57,7 @@ const AddRosset = () => {
     setError(null);
     setSuccess(false);
 
-    // защита от двойного клика
     if (isSubmitting) return;
-
     setIsSubmitting(true);
 
     try {
@@ -87,9 +87,8 @@ const AddRosset = () => {
         throw new Error("Ошибка при создании розетки");
       }
 
-      const data = await res.json();
-
       setSuccess(true);
+      setShowSuccessPopup(true);
 
       // очистка формы
       setFormData({
@@ -105,7 +104,6 @@ const AddRosset = () => {
         comment: "",
         price: "",
       });
-
       setAdditionalImageInput("");
 
     } catch (err: any) {
@@ -117,7 +115,7 @@ const AddRosset = () => {
   };
 
   const previewRosset = {
-    image: formData.image || "/placeholder.jpg",
+    image: formData.image || "",
     seriesNumber: formData.seriesNumber || "ER_00/0",
     rossetDiameter: Number(formData.rossetDiameter) || 0,
     numberOfTails: Number(formData.numberOfTails) || 0,
@@ -131,31 +129,40 @@ const AddRosset = () => {
       try {
         const res = await fetch("/api/series");
         const data = await res.json();
-
         setSeriesList(data.series);
       } catch (err) {
         console.error("Ошибка загрузки серий:", err);
       }
     };
-
     fetchSeries();
   }, []);
 
   return (
     <TemplateContent>
       <div className="add-rosset">
+        {/* Сообщение об ошибке */}
+        {error && (
+          <div className="error-message">
+            ❌ {error}
+          </div>
+        )}
+
         <div className="add-rosset__layout">
           <div className="add-rosset__preview">
             <div className="preview-card">
               <div className="preview-card__image">
-                <Image src={previewRosset.image} alt="preview" width={300} height={300} />
+                {previewRosset.image !== "" ? <Image src={previewRosset.image} alt="preview" width={300} height={300} /> : (
+                  <div className="preview-placeholder">
+                    <p>Баннер</p>
+                  </div>
+                )}
               </div>
               <div className="preview-card__info">
                 <h3 className="preview-card__title">{previewRosset.seriesNumber}</h3>
                 <div className="preview-card__details">
                   <span>Диаметр: {previewRosset.rossetDiameter}см</span>
-                  <span>Количество хвостов: {previewRosset.numberOfTails}</span>
-                  <span>Длина хвостов: {previewRosset.tailLength}см</span>
+                  <span>Хвостов: {previewRosset.numberOfTails}</span>
+                  <span>Длина: {previewRosset.tailLength}см</span>
                 </div>
                 {previewRosset.comment && (
                   <p className="preview-card__comment">{previewRosset.comment}</p>
@@ -286,7 +293,9 @@ const AddRosset = () => {
                 />
               </div>
 
-              <button type="submit" className="submit-btn">Сохранить</button>
+              <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                {isSubmitting ? "Сохранение..." : "Сохранить розетку"}
+              </button>
             </form>
           </div>
 
@@ -320,6 +329,18 @@ const AddRosset = () => {
           </div>
         </div>
       </div>
+
+      {/* Попап уведомления об успешном добавлении */}
+      {showSuccessPopup && (
+        <Popup
+          title="Успешно!"
+          text="Розетка успешно добавлена в каталог."
+          onClose={() => setShowSuccessPopup(false)}
+          onConfirm={() => setShowSuccessPopup(false)}
+          onCancel={() => setShowSuccessPopup(false)}
+          singleButton={true}
+        />
+      )}
     </TemplateContent>
   );
 };

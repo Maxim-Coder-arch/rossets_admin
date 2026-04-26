@@ -4,6 +4,7 @@ import { useState } from "react";
 import TemplateContent from "@/app/main/template-content/templateContent";
 import Image from "next/image";
 import "./index.scss";
+import Popup from "@/app/share/popup/popup";
 
 const AddSeries = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const AddSeries = () => {
     image: "",
   });
   const [previewImage, setPreviewImage] = useState("");
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,7 +40,7 @@ const AddSeries = () => {
       const data = await res.json();
 
       if (data.success) {
-        alert("Серия добавлена!");
+        setShowSuccessPopup(true);
 
         setFormData({
           seriesTitle: "",
@@ -110,6 +112,16 @@ const AddSeries = () => {
           </div>
         </div>
       </div>
+      {showSuccessPopup && (
+        <Popup
+          title="Успешно!"
+          text="Серия успешно добавлена в каталог."
+          onClose={() => setShowSuccessPopup(false)}
+          onConfirm={() => setShowSuccessPopup(false)}
+          onCancel={() => setShowSuccessPopup(false)}
+          singleButton={true}
+        />
+      )}
     </TemplateContent>
   );
 };

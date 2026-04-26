@@ -14,6 +14,7 @@ interface SeriesFolderProps {
   isOpen: boolean;
   onOpen: (id: string) => void;
   onDeleteSeries: (id: string) => void;
+  onDeleteRosset: (id: string, seriesId: string) => void;
 }
 
 const SeriesFolder = ({
@@ -22,6 +23,7 @@ const SeriesFolder = ({
   onOpen,
   isOpen,
   onDeleteSeries,
+  onDeleteRosset,
 }: SeriesFolderProps) => {
   return (
     <div className="series-folder">
@@ -45,10 +47,6 @@ const SeriesFolder = ({
             className="delete-btn"
             onClick={(e) => {
               e.stopPropagation();
-              const confirmed = confirm(
-                "Ты точно хочешь удалить серию и ВСЕ розетки внутри неё?"
-              );
-              if (!confirmed) return;
               onDeleteSeries(series._id);
             }}
           >
@@ -62,13 +60,12 @@ const SeriesFolder = ({
         <div className="series-folder__content">
           {rossetsList.length === 0 ? (
             <div className="empty-folder">
-              <p>📭 В этой серии пока нет розеток</p>
-              <button className="add-rosset-btn">+ Добавить розетку</button>
+              <p>В этой серии пока нет розеток</p>
             </div>
           ) : (
             <div className="rossets-grid">
               {rossetsList.map((rosset) => (
-                <RossetCard key={rosset._id} rosset={rosset} />
+                <RossetCard key={rosset._id} rosset={rosset} onDelete={onDeleteRosset} />
               ))}
             </div>
           )}

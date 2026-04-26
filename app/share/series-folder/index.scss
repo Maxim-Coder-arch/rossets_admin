@@ -56,3 +56,12 @@
     animation: fadeIn 0.2s ease;
   }
 }
+
+.delete-btn {
+  cursor: pointer;
+}
+
+.folder-actions {
+  display: flex;
+  column-gap: 10px;
+}
