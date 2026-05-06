@@ -6,6 +6,7 @@ import LinkIcon from "@/public/icons/link";
 import PlusIcon from "@/public/icons/plus";
 import RossetIcon from "@/public/icons/rosset";
 import SeriesIcon from "@/public/icons/series";
+import WebIcon from "@/public/icons/web";
 
 export const sidebarData = [
   {
@@ -52,5 +53,15 @@ export const sidebarData = [
     label: "Перейти на сайт",
     link: "https://rosset.ru",
     icon: <LinkIcon />
+  },
+  {
+    label: "Облачный сервис timeweb",
+    link: "https://rosset.ru",
+    icon: <WebIcon />
+  },
+  {
+    label: "Облачный сервис vercel",
+    link: "https://rosset.ru",
+    icon: <WebIcon />
   },
 ]

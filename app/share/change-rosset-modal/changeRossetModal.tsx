@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import "./index.scss";
 import Portal from "@/app/common/portal";
+import { motion } from "framer-motion";
 
 interface IAdditionalImage {
   url: string;
@@ -94,7 +95,11 @@ const ChangeRossetModal = ({ rosset, onClose, onSave }: ChangeRossetModalProps) 
 
   return (
     <Portal>
-      <div className="change-rosset-modal-overlay" onClick={handleOverlayClick}>
+      <motion.div 
+      initial={{opacity: 0, y: 100}}
+      animate={{opacity: 1, y: 0}}
+      className="change-rosset-modal-overlay" 
+      onClick={handleOverlayClick}>
         <div className="change-rosset-modal">
           <button className="change-rosset-modal__close" onClick={onClose}>✕</button>
           
@@ -285,7 +290,7 @@ const ChangeRossetModal = ({ rosset, onClose, onSave }: ChangeRossetModalProps) 
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Portal>
   );
 };

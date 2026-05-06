@@ -23,7 +23,7 @@ const AdminDashboard = () => {
     setGenerateMessage(null);
 
     try {
-      const response = await fetch("/api/generate-products", {
+      const response = await fetch("/api/generate-full-data", {
         method: "POST",
       });
 

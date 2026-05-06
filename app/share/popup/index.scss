@@ -7,74 +7,119 @@
   left: 0;
   right: 0;
   bottom: 0;
-  backdrop-filter: blur(5px);
-  background-color: rgba($black-text-color, 0.5);
+  background-color: rgba($black-text-color, 0.6);
+  backdrop-filter: blur(4px);
   z-index: 1001;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  padding: {
-    bottom: 20px;
-    right: 20px;
-  };
-  @media screen and (max-width: 768px) {
-    padding-right: 0;
-    justify-content: center;
-  }
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .popup-window {
-  width: fit-content;
-  height: fit-content;
-  min-width: 350px;
-  min-height: 100px;
-  background-color: rgba($main-text-color, 0.5);
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background-color: rgba($main-text-color, 0.95);
   backdrop-filter: blur(20px);
-  padding: 25px 10px;
+  border-radius: 24px;
+  padding: 28px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba($main-text-color, 0.3);
+  
   @media screen and (max-width: 768px) {
-    min-width: none;
-    width: 90%;
+    max-width: 90%;
+    padding: 24px 20px;
   }
+  
   &__close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 16px;
+    right: 20px;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba($black-text-color, 0.5);
+    transition: color 0.2s ease;
+    background: none;
+    border: none;
+    
+    &:hover {
+      color: $black-text-color;
+    }
   }
+  
   &__title {
-    @include font(20px, 600);
+    @include font(22px, 600);
     color: $black-text-color;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    padding-right: 24px;
+    
+    @media screen and (max-width: 768px) {
+      font-size: 18px;
+    }
   }
+  
   &__text {
     @include font(14px, 400);
-    color: rgba($black-text-color, 0.8);
+    color: rgba($black-text-color, 0.7);
+    line-height: 1.5;
+    margin-bottom: 28px;
   }
+  
   &__actions {
     display: flex;
-    margin-top: 30px;
-    column-gap: 20px;
+    gap: 12px;
+    margin-top: 8px;
+    
+    @media screen and (max-width: 480px) {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
     &__btn {
-      padding: 8px 22px;
-      border-radius: 10px;
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 12px;
       cursor: pointer;
       @include font(14px, 500);
-      color: $main-text-color;
+      transition: all 0.2s ease;
+      border: none;
+      
+      &:hover {
+        transform: translateY(-1px);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
     }
   }
 }
 
 .popup-btn--cancel {
-  background-color: $accent-mint;
+  background-color: rgba($black-text-color, 0.08);
+  color: $black-text-color;
+  
+  &:hover {
+    background-color: rgba($black-text-color, 0.15);
+  }
 }
-
 
 .popup-btn--confirm {
   background-color: $accent-terracotta;
+  color: $main-text-color;
+  
+  &:hover {
+    background-color: darken($accent-terracotta, 10%);
+  }
 }
 
 .message-btn {
   background-color: $accent-mint;
+  color: $main-text-color;
+  
+  &:hover {
+    background-color: darken($accent-mint, 10%);
+  }
 }

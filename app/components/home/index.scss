@@ -295,6 +295,12 @@ $admin-overlay: rgba(255, 255, 255, 0.3);
         cursor: pointer;
         accent-color: $admin-black;
         flex-shrink: 0;
+        background-color: $accent-terracotta;
+        border-radius: 50%;
+        &:checked {
+          accent-color: $accent-red;
+          background: $accent-green;
+        }
       }
       
       .note-text {

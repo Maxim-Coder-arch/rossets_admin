@@ -2,11 +2,11 @@
 @use "../../global_styles/mixins/mixins.scss" as *;
 
 .rosset-card {
-  background: rgba($admin-white, 0.8);
+  background: rgba($admin-white, 0.5);
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.2s;
-  
+  backdrop-filter: blur(12px);
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
